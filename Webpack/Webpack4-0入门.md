@@ -252,7 +252,7 @@ module.exports = {
 此时浏览器自动打开`http://localhost:9000`，可以看到`html-webpack-plugin`在打包结束后生成的`index.html`文件(由于`html-webpack-plugin`的功能，该文件以`./index.html`为模板，以`./release/bundle.js`为`JavaScript`脚本)。且修改 `./src/index.js`文件时，浏览器自动刷新。
 5. `webpack-dev-server`依赖于`webpack-cli`。安装`webpack-cli`会同时安装`webpack-dev-server`。对于`webpack3.X`版本来说，使用最新版本的`webpack-dev-server`会报错，可通过降低版本解决，例如`2.9.7`版本。
 > 使用`webpack-dev-server`打包会在内存中生成打包文件，提升打包效率。 并不会实际生成`dist`文件夹以及打包输出文件。如果需要打包生成文件，仍然需要使用`webpack`命令。
->当前配置虽然实现了代码修改自动打包浏览器自动刷新。但浏览器刷新之后之前的页面操作无法保存，尚未实现不刷新浏览器在运行时更新所修改模块。
+>当前配置虽然实现了代码修改自动打包浏览器自动刷新。但浏览器刷新之前的页面操作无法保存，尚未实现不刷新浏览器在运行时更新所修改模块。
 ### 6.2.2 devServer.historyApiFallback
 1. 当使用 [HTML5 History API](https://developer.mozilla.org/en-US/docs/Web/API/History) 时，任意的 `404` 响应都可能需要被替代为 `index.html`。通过传入以下启用：
 ```

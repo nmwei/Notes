@@ -22,6 +22,7 @@
 * 一个文档`document`由多个`field`字段组成。
 * `index`索引以及`_id`主键是对文档`document`的标识。
 ## 2. 安装
+### 2.1 MongoDB安装及启动
 1. 路径
   (1) 安装目录
   `/usr/local/Cellar/mongodb/4.0.4_1`
@@ -59,6 +60,7 @@ net:
 (2) 客户端连接服务端
 `mongo`
 4. 关闭MongoDB服务
+`mongo `
 `use admin; ` 
 `db.shutdownServer();`
 注释: 只有在`admin`数据库中时才能关闭`MongoDB`服务。
@@ -72,6 +74,12 @@ net:
 (7) `mongostat.exe` 实时性能监控工具
 (8) `mongotop.exe` 跟踪`MongDB`实例读写时间工具
 注释: `mongo.exe`客户端工具和`mongod.exe`服务端工具最常用。
+### 2.2 MongoDB图形客户端
+1. `Robo 3T`是目前最好的可视化`MongoDB`客户端，并且是免费的。
+![image.png](https://upload-images.jianshu.io/upload_images/4989175-050c9fead5f51fa6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+2. `Robomongo`公司还提供了功能更强大的`Studio 3T`客户端，该软件为商业软件。
+该软件支持`SQL`语句查询，`Studio 3T`会帮我们转化为`mongo`查询语句。
+![image.png](https://upload-images.jianshu.io/upload_images/4989175-d6e0674181a07038.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 ## 3. 操作
 ### 3.1 mongo.exe客户端
 #### 3.1.1 操作用户
@@ -144,6 +152,8 @@ switched to db test
 * `userAdminAnyDatabase`：只在`admin`数据库中可用，赋予用户所有数据库的`userAdmin`权限
 * `dbAdminAnyDatabase`：只在`admin`数据库中可用，赋予用户所有数据库的`dbAdmin`权限。
 * `root`：只在`admin`数据库中可用。超级账号，超级权限(不建议使用)。
+5. `Studio 3T`创建用户
+![image.png](https://upload-images.jianshu.io/upload_images/4989175-15bf3f043d781772.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 ##### 3.1.1.2 授权认证
 ```
  # 认证启动
@@ -202,7 +212,10 @@ WriteResult({ "nRemoved" : 1 })
 0
 ```
 #### 3.1.2 操作数据库
-##### 3.1.2.1 查询
+##### 3.1.2.1 数据结构
+1. `MongoDB`使用`BSON`(二进制`JSON`)来保存数据。一条记录就是一个`BSON`，被称作文档(`Document`)。
+2. 某些`BSON`聚集在一起，就形成集合(`Collection`)。
+##### 3.1.2.2 查询
 1. 查看所有数据库
    `show dbs`
 2. 新建/切换到数据库
@@ -213,28 +226,28 @@ WriteResult({ "nRemoved" : 1 })
    注释： `db`表示当前数据库。
 4. 查看集合
    `show collections/tables` 
-5. 查看当前集合所有数据
+5. 查看集合占用内存
+    `db.集合名.dataSize()`
+6. 查看当前集合所有数据
     `db.集合名.find()`
-6. 格式化查看当前集合所有数据
+7. 格式化查看当前集合所有数据
     `db.集合名.find().pretty()`
-7. 查看集合中第一条数据
+8. 查看集合中第一条数据
     `db.集合名.findOne()`
-8. 限制数量
+9. 限制数量
     `db.集合名.find().limit(数量)`
-9. 跳过指定数量
+10. 跳过指定数量
     `db.集合名.find().skip(数量)`
-10. 查询数量
+11. 查询数量
     `db.表名.find().count()`
-11. 排序
+12. 排序
     `db.表名.find().sort({"字段名":1}) //1表示升序;  -1表示降序`
-12. 指定字段返回
+13. 指定字段返回
     `db.表名.find({},{"字段名":0}) //1返回; 0不返回`　　
-13. 比较查询 
-  大于- `$gt`；小于- `$lt`；大于等于- `$gte`；小于等于- `$lte`；非等于- `$ne`；或者- `$or`；包含- `$in`；不包含- `$nin`；
-14. 正则表达式
-`/匹配字符/`或`new RegExp("匹配字符")`
-```javascript
- > for(let i = 0; i < 10; i++) {
+14. 比较查询 
+  大于- `$gt`；小于- `$lt`；大于等于- `$gte`；小于等于- `$lte`；非等于- `$ne`；包含- `$in`；不包含- `$nin`；
+```
+> for(let i = 0; i < 10; i++) {
      db.tb.save({'name': 'jake'+ i, id: i, msg: {age:i}})
      //mongo.exe 客户端， 支持js语法!
   }
@@ -269,11 +282,41 @@ WriteResult({ "nRemoved" : 1 })
 { "_id" : ObjectId("5b559f72e1aefaf030c8d017"), "name" : "jake7", "id" : 7 }
 { "_id" : ObjectId("5b559f72e1aefaf030c8d018"), "name" : "jake8", "id" : 8 }
 { "_id" : ObjectId("5b559f72e1aefaf030c8d019"), "name" : "jake9", "id" : 9 }
+```
+15. 高级查询
+全部 - `$all`；全不 - `$not`；或者 - `$or`；含有字段 - `$exists`
+注释：`$all`与`$in`类似，`$in`只需满足`()`内的某一个值即可, 而`$all` 必须满足`[]`内的所有值。
+```
+for(let i = 0; i < 10; i++) {
+     db.tb.save({'name': 'jake'+ i, id: i, msg: {age:i}})
+  }
+
+db.tb.find({'msg.age': {'$all': [3]}}) //3
+db.tb.find({'$or': [{'name': 'jake1'}, {'msg.age': 3}]}) //1 3
+db.tb.find({'msg.age': {'$not': {'$gte': 3}}}) //0-2
+db.tb.find({'msg.age': {'$exists': 1}}) //0-9
+```
+16. 正则表达式
+`/匹配字符/`或`new RegExp("匹配字符")`
+```
+> for(let i = 0; i < 10; i++) {
+     db.tb.save({'name': 'jake'+ i, id: i, msg: {age:i}})
+  }
 > db.tb.find({name: /^jake(1|2)$/})
 { "_id" : ObjectId("5b559f72e1aefaf030c8d011"), "name" : "jake1", "id" : 1, "msg" : { "age" : 1 } }
 { "_id" : ObjectId("5b559f72e1aefaf030c8d012"), "name" : "jake2", "id" : 2, "msg" : { "age" : 2 } }
 ```
-##### 3.1.2.2  增加
+17. 排除重复
+```
+for(let i = 0; i < 10; i++) {
+     db.tb.save({'name': 'jake'+ i, id: i, msg: {age:i}})
+}
+
+db.tb.save(arr)
+db.tb.find()  //0-9
+db.tb.distinct('name') // ['jack']
+```
+##### 3.1.2.3  增加
   1. 新增数据库表
  `db.createCollection('user')`
 **注释：一个集合相当于一个表。**
@@ -286,7 +329,7 @@ WriteResult({ "nRemoved" : 1 })
   `db.user.insert({_id: 0, id:1, name:'hello'})`
    `db.save.insert({_id: 0, id:1, name:'hello'})`
 注意: ① 如果已有`user`表则在该表中插入一条数据，如果没有`user`表则创建`user`表并插入一条数据。② 如果未指定`_id`，则`mongodb`会给该条数据默认生成`_id`。③ 如果指定的`_id`与已有某条数据的`_id`相同，则`sava`方法更新数据，`insert`方法抛出异常。
-##### 2.1.2.3 删除
+##### 2.1.2.4 删除
    1. 删除当前数据库
   `db.dropDatabase()`
    2. 删除数据库表
@@ -296,14 +339,118 @@ WriteResult({ "nRemoved" : 1 })
 ```javascript
 > db.tb.remove({id: {$gt: 5}})
 ```
-##### 3.1.2.4 修改
-   1. 更新集合中某一条数据
-  `db.表名.update({"条件字段名":"字段值"},{$set:{"要修改的字段名":"修改后的字段值"}});`
+##### 3.1.2.5 修改
+1. 更新集合名称
+`db.表名.renameCollection(修改之后的名称)`
+```
+db.tb.renameCollection('tb1')
+```
+2. 更新集合中某一条数据
+  `db.表名.update({查询条件},{$set:{要修改的字段名:修改后的字段值}});`
 ```javascript
 > db.tb.update({name: 'jake0'}, {$set: {'msg.age': 6}});
 > db.tb.update({'msg.age': 5}, {$set: {'id': 10}})
 ```
 注释：`update`方法的第一个参数起到查询的效果，更新查询到的某一条数据。
+3. 更新集合中所有查询到的数据
+ `db.表名.updateMany({查询条件},{$set:{要修改的字段名:修改后的字段值}});`
+```
+db.tb.updateMany({'msg.age': {$gte: 0}}, {$set: {'msg.age': 0}})
+```
+4. 删除记录中的字段
+`db.表名.updateMany({查询条件},{$unset:{字段1:1, 字段2: 1}});`
+```
+db.tb.updateMany({}, {$unset: {id: 1}})
+```
+5. 对某个字段做加法运算
+`db.表名.updateMany({查询条件},{$inc:{字段1:增加的值}});`
+```
+db.tb.updateMany({}, {$inc: {'msg.age': 6}})
+```
+6. 数组中添加元素、删除元素
+`db.表名.updateMany({查询条件},{$push:{数组字段:数组中添加的元素}});`
+`db.表名.updateMany({查询条件},{$pull:{数组字段:数组中删除的元素}});`
+```
+db.teacher.save({name: 'jack', role: ['老师', '班主任']})
+db.teacher.updateMany({name: 'jack'}, {$push: {role: '教务主任'}})
+db.teacher.updateMany({name: 'jack'}, {$pull: {role: '老师'}})
+```
+##### 3.1.2.6 索引机制
+1. `MongoDB`存放了大量的数据，为了加快数据检索速度，需要为集合创建索引。
+(1) 创建索引
+`db.collection.createIndex({字段, 1}, options)`
+如果索引字段值按照升序排列属性值为`1`，降序排列属性值为`-1`。
+(2) 删除索引
+`db.collection.dropIndexes()`
+(3) 获取索引
+`db.collection.getIndexes()`
+(4) 空闲时创建索引
+`{background: true}`
+由于创建索引会阻塞`MongoDB`，一般在空闲时创建索引。
+(5) 自定义索引名称
+`{name: "名称"}`
+默认使用`索引字段_1/-1`做为索引名称。
+(6) 唯一性索引
+`{unique: true}`
+唯一性索引只能创建在每个记录都含有的公共字段上。
+```
+for(let i = 0; i < 10; i++) {
+     db.tb.save({'name': 'jake'+ i, id: i, msg: {age:i}})
+}
+db.tb.createIndex({name: 1})
+db.tb.dropIndexes()
+db.tb.createIndex({name: 1}, {background: true, name: 'name', unique:true})
+db.tb.getIndexes() //_id_ name
+db.tb.save({'name': 'jake1', id: 1, msg: {age:1}}) 
+//E11000 duplicate key error collection: school.tb index: name dup key: { : "jake1" }
+```
+2. 创建索引的原则
+集合的数据量很大，则应该创建索引。
+集合的数据读取多于写入，则应该创建索引。
+给经常被当做查询条件的字段设置索引。
+#### 3.1.2.7 数据导入导出
+1. `mongoexport`导出集合
+(1) 未授权认证
+`mongoexport -d(指定数据库) demo -c(指定表名称) user -q(过滤条件，可以省略) ‘{“name”: {$ne: null}}’ -o(导出文件名)`
+(2) 已授权认证
+```
+➜  ~ mongoexport --host=localhost --port=27017 -u school -p school --authenticationDatabase=school -d school -c tb -o /Users/nimengwei/Downloads/tb.json
+
+2020-02-08T12:18:59.114+0800	connected to: localhost:27017
+2020-02-08T12:18:59.123+0800	exported 10 records
+```
+2. `mongoimport`导入集合 
+(1) 未授权认证
+`mongoimport --host 127.0.0.1:19999 -d(指定数据库) demo -c(指定表名称) user --file ./dbbackup/dumall-backup/user.json`
+(2) 已授权认证
+```
+➜  ~ mongoimport --host=localhost --port=27017 -u school -p school --authenticationDatabase=school -d school -c tbcopy --file /Users/nimengwei/Downloads/tb.json
+2020-02-08T12:30:55.498+0800	connected to: localhost:27017
+2020-02-08T12:30:55.586+0800	imported 10 documents
+```
+3. `mongodump`导出逻辑库
+`--dumpDbUsersAndRoles`参数可以备份隶属于逻辑库的用户
+```
+➜  ~ mongodump --host=localhost --port=27017 -u school -p school --authenticationDatabase=school -d school -o /Users/nimengwei/Downloads/ 
+2020-02-08T15:54:41.616+0800	writing school.tb to 
+2020-02-08T15:54:41.616+0800	writing school.tbcopy to 
+2020-02-08T15:54:41.616+0800	writing school.teacher to 
+2020-02-08T15:54:41.616+0800	writing school.stu to 
+2020-02-08T15:54:41.650+0800	done dumping school.tb (10 documents)
+2020-02-08T15:54:41.650+0800	done dumping school.tbcopy (10 documents)
+2020-02-08T15:54:41.651+0800	done dumping school.stu (1 document)
+2020-02-08T15:54:41.653+0800	done dumping school.teacher (2 documents)
+```
+4. `mongorestore`导入逻辑库
+`--drop` 已有的数据集合是否删除
+```
+➜  ~ mongorestore --host=localhost --port=27017 -u school -p school --authenticationDatabase=school --drop -d school /Users/nimengwei/Downloads/school
+2020-02-08T16:03:30.670+0800	the --db and --collection args should only be used when restoring from a BSON file. Other uses are deprecated and will not exist in the future; use --nsInclude instead
+2020-02-08T16:03:30.671+0800	building a list of collections to restore from /Users/nimengwei/Downloads/school dir
+2020-02-08T16:03:30.688+0800	reading metadata for school.tb from /Users/nimengwei/Downloads/school/tb.metadata.json
+...
+2020-02-08T16:03:30.984+0800	done
+```
 ### 3.2 Node操作数据库
 #### 3.2.1 增删改查
 ##### 3.2.1.1 增加
@@ -522,11 +669,6 @@ MongoClient.connect(DB_CONN_STR, (err, client) => {
 });
 ```
 注释: ① `deleteOne()`方法会删除第一条符合条件的数据。`deleteMany()` 方法会删除所有符合条件的数据。② `res.result.n` 删除的条数。
-### 3.3 其他exe程序操作
-1. `mongoimport`导入 
-`mongoimport --host 127.0.0.1:19999 -d(指定数据库) demo -c(指定表名称) user --file ./dbbackup/dumall-backup/user.json`
-2. `mongoexport`导出
-`mongoexport -d(指定数据库) demo -c(指定表名称) user -q(过滤条件，可以省略) ‘{“name”: {$ne: null}}’ -o(导出文件名) `
 ## 4. 参考
 [MongoDB中文文档](http://www.mongodb.org.cn/)
 [Mac环境下安装和配置MongoDB](https://www.imooc.com/article/22733)
