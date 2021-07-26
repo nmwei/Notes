@@ -4,14 +4,16 @@ var plays = require('./plays');
 //账单
 function statement (invoice, plays) {
     let totalAmount = 0; //总金额
-    let volumeCredits = 0; //总积分
     let result = `Statement for ${invoice.customer}\n`;
     for (let perf of invoice.performances) {
-        volumeCredits += volumeCreditsFor(perf);
-
         // print line for this order
         result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
         totalAmount += amountFor(perf);
+    }
+
+    let volumeCredits = 0; //总积分
+    for (let perf of invoice.performances) {
+        volumeCredits += volumeCreditsFor(perf);
     }
     result += `Amount owed is ${usd(totalAmount)}\n`;
     result += `You earned ${volumeCredits} credits\n`;
