@@ -28,7 +28,23 @@
 打开Xcode-Create a new Xcode project-iOS、App、Next-项目信息-项目位置
 2. Xcode项目界面
 ![img](https://raw.githubusercontent.com/nmwei/Notes/master/Imgs/ios/xcode.png)
-3. 
+3. [hello world](https://github.com/nmwei/Notes/commit/b0656cab49d1aebffbebd455b3b99da01ffaa615#diff-46c4417fd68f6e9733114fbaff9b91883328f0112fdcbbd4ff98fcd67cc61dcd)
+    ```
+    @implementation ViewController
+    - (void)viewDidLoad {
+        [super viewDidLoad];
+        // Do any additional setup after loading the view.
+        [self.view addSubview:({
+            UILabel *label = [[UILabel alloc] init];
+            label.text = @"hello world";
+            [label sizeToFit];
+            label.center = CGPointMake(self.view.frame.size.width/2, self.view.frame.size.height/2);
+            label;
+        })];
+    }
+    @end
+    ```
+    
 # 第二章 实现App的基本界面
 # 第三章 实现App的基础功能
 # 第四章 App功能扩展和完善
