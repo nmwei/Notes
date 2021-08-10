@@ -26,7 +26,9 @@
 ## 1.3 使用Xcode创建第一个工程
 1. 创建工程  
 打开Xcode-Create a new Xcode project-iOS、App、Next-项目信息-项目位置
-2. 
+2. Xcode项目界面
+![img](https://raw.githubusercontent.com/nmwei/Notes/master/Imgs/ios/xcode.png)
+3. 
 # 第二章 实现App的基本界面
 # 第三章 实现App的基础功能
 # 第四章 App功能扩展和完善
