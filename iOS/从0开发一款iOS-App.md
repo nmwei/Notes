@@ -44,8 +44,61 @@
     }
     @end
     ```
-    
 # 第二章 实现App的基本界面
+## 2.1 UIView
+1. MVC模式: iOS中的架构基石  
+M-Model数据;  
+V-View视图，例如：UIView  
+C-Controller管理，例如：UIViewController
+2. UIView介绍  
+(1) UIView是最基础的视图类  
+(2) UIView是各种视图类型的父类，例如：UIImageView、UILabelView
+(3) UIView布局：大小、位置
+(4) addSubView添加子View, 栈结构管理所有子View, 后入栈的位于更上层
+3. UIView创建及添加
+```
+    UIView *view = [[UIView alloc] init];
+    view.backgroundColor = [UIColor redColor];
+    view.frame = CGRectMake(100, 100, 100, 100);
+    [self.view addSubview:view];
+    
+    UIView *view2 = [[UIView alloc] init];
+    view2.backgroundColor = [UIColor greenColor];
+    view2.frame = CGRectMake(150, 150, 100, 100);
+    [self.view addSubview:view2];
+```
+4. UIView生命周期
+```
+@interface TestView : UIView
+@end
+
+@implementation TestView
+- (instancetype)init{
+    self = [super init];
+    if (self) {
+    
+    }
+    return self;
+}
+
+- (void)willMoveToSuperview:(nullable UIView *)newSuperview{
+    [super willMoveToSuperview:newSuperview];
+}
+- (void)didMoveToSuperview{
+    [super didMoveToSuperview];
+    
+}
+- (void)willMoveToWindow:(nullable UIWindow *)newWindow{
+    [super willMoveToWindow:newWindow];
+}
+- (void)didMoveToWindow{
+    [super didMoveToWindow];
+}
+@end
+```
+
+
+## 2.2 
 # 第三章 实现App的基础功能
 # 第四章 App功能扩展和完善
 
